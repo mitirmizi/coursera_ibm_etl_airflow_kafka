@@ -75,6 +75,13 @@ effectively converting it from CRLF to LF line breaks.
 Use tool `wget` to download the file from the following link.
 Link: https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/toll_traffic_generator.py
 
+#### Configure the Toll Trafic Simulator
+Open the downloaded file and set the `TOPIC`'s value as `toll`.
+
+Run the Toll Traffic Simulator
+```bash
+python toll_traffic_generator.py
+```
 
 ### Prepare the lab environment
 I'm using postgres instead of MySQL as that was already installed on my machine and effectively they serve the same purpose.
@@ -94,10 +101,30 @@ Then start kafka:
 bin/kafka-server-start.sh config/server.properties
 ```
 
-
-#### Setup Database
+### Setup Database
 1. Create database named `tolldata`.
 2. Create `livetolldata`
     ```SQL
     CREATE TABLE livetolldata(time_stamp timestamp, vehicle_id int, vehicle_type varchar(15), toll_plaza_id smallint);
+    ```
+
+### Create the Topic in Kafka
+Run the file `create_kafka_topic.py`
+
+
+### Configure Streaming_data_reader.py
+Add the relavent database and topic information in the file.
+
+### Health Check the streaming data pipeline
+Verify that data is being added to the database.
+
+1. Connect to the database
+    ```bash
+    psql -d tolldata
+    ```
+2. Print final few rows to see if the timestamp is being updated, indicating that more data is being added.
+    ```sql
+    SELECT * FROM livetolldata
+    ORDER BY time_stamp DESC
+    LIMIT 20;
     ```
